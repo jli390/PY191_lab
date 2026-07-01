@@ -233,7 +233,7 @@ def main(screen):
                 new_line_indexes.append(copy.find("\n") + sum(new_line_indexes) + len(new_line_indexes))
                 copy = copy[copy.find("\n")+1:]
 
-            current_line = -1
+            current_line = len(new_line_indexes) - 1
             if new_line_indexes:
                 for line, idx in enumerate(new_line_indexes): 
                     if cursor < idx: 
@@ -241,16 +241,20 @@ def main(screen):
                         break
 
                 if current_line < len(new_line_indexes) - 1: 
-                    distance = cursor - new_line_indexes[current_line + 1]
-                    if current_line + 1 == len(new_line_indexes) - 1: 
-                        if distance < new_line_indexes[len(new_line_indexes) - 1]: 
-                            cursor = distance
-                        else: 
-                            cursor = new_line_indexes[len(new_line_indexes) - 1]
+                    if current_line == 0: 
+                        distance = cursor
                     else: 
-                        if distance < new_line_indexes[current_line + 2] - new_line_indexes[current_line + 1]:
-                            cursor = new_line_indexes[current_line + 2] + distance
-                        else: cursor = new_line_indexes[current_line + 1]
+                        distance = cursor - new_line_indexes[current_line - 1]
+                    # print(cursor, current_line, distance)
+                    if current_line + 1 == len(new_line_indexes) - 1: 
+                        if distance < len(text) - new_line_indexes[len(new_line_indexes) - 1]: 
+                            cursor = distance + new_line_indexes[len(new_line_indexes) - 1]
+                        else: 
+                            cursor = len(text) - new_line_indexes[len(new_line_indexes) - 1]
+                    else: 
+                        if distance < new_line_indexes[current_line + 1] - new_line_indexes[current_line]:
+                            cursor = new_line_indexes[current_line] + distance
+                        else: cursor = new_line_indexes[current_line]
 
             display = text[:cursor] + "\n" + text[cursor:]
 
